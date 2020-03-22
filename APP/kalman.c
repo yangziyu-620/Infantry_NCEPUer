@@ -1,6 +1,7 @@
 /**    
   * @author  Liu heng
-  * 一阶卡尔曼滤波器来自RoboMaster论坛  
+  * 一阶卡尔曼滤波器
+       来自RoboMaster论坛  
   *   一维卡尔曼滤波器                     
   *   使用时先定义一个kalman指针，然后调用kalmanCreate()创建一个滤波器 
   *   每次读取到传感器数据后即可调用KalmanFilter()来对数据进行滤波

@@ -40,17 +40,17 @@ void SYSTEM_Reset( void )
   */
 void SYSTEM_OutCtrlProtect(void)
 {
-    SYSTEM_Reset();//系统恢复至重启状态
-	REMOTE_vResetData();//遥控数据恢复至默认状态
+    SYSTEM_Reset();			//系统恢复至重启状态
+	REMOTE_vResetData();	//遥控数据恢复至默认状态
 	
 	
-	Laser_Off;//激光关
-	CHASSIS_StopMotor();//底盘关
-	GIMBAL_StopMotor();//云台关
-	Magazine_StopCtrl();//舵机停止转动
-	REVOLVER_StopMotor();//拨盘停止转动
-	FRICTION_StopMotor();//摩擦轮关
-	Super_Cap_StopCtrl();//电容关闭充放电
+	Laser_Off;				//激光关
+	CHASSIS_StopMotor();	//底盘关
+	GIMBAL_StopMotor();		//云台关
+	Magazine_StopCtrl();	//舵机停止转动
+	REVOLVER_StopMotor();	//拨盘停止转动
+	FRICTION_StopMotor();	//摩擦轮关
+	Super_Cap_StopCtrl();	//电容关闭充放电
 }
 
 /**
@@ -67,11 +67,11 @@ void SYSTEM_UpdateSystemState(void)
 	{
 		ulInitCnt++;
 
-		if (ulInitCnt > 2500)//启动延时,1ms*2k=2s,为了给MPU启动时间
+		if (ulInitCnt > 2500)	//启动延时,1ms*2k=2s,为了给MPU启动时间
 		{
 			ulInitCnt = 0;
 
-			systemState = SYSTEM_RUNNING;//启动完成,转换成普通模式
+			systemState = SYSTEM_RUNNING;	//启动完成,转换成普通模式
 		}
 	}
 }

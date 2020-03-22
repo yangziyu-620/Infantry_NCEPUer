@@ -229,14 +229,14 @@ void Task_Chassis(void *pvParameters)
 		}
 		else
 		{
-			if (SYSTEM_GetRemoteMode() == RC) //遥控模式
+			if (SYSTEM_GetRemoteMode() == RC) 	//遥控模式
 			{
 				CHAS_Rc_Ctrl();
 				actChassis = CHASSIS_NORMAL;
-				Chass_Switch_F = 1;//重置扭腰
-				Chass_Key_F_Change = 0;//重置扭腰
-				remot_change = TRUE;//标记切回了遥控模式
-				Hurt_Data_Update = FALSE;//防止受到伤害切键盘模式时会动
+				Chass_Switch_F = 1;				//重置扭腰
+				Chass_Key_F_Change = 0;			//重置扭腰
+				remot_change = TRUE;			//标记切回了遥控模式
+				Hurt_Data_Update = FALSE;		//防止受到伤害切键盘模式时会动
 			}
 			else 								//键盘模式
 			{

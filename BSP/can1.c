@@ -37,34 +37,34 @@ void CAN1_Init(void)
 	
 	can_str.CAN_ABOM=DISABLE;
 	can_str.CAN_AWUM=DISABLE;
-	can_str.CAN_BS1=CAN_BS1_9tq;//Tbs1范围CAN_BS1_1tq ~CAN_BS1_16tq
-	can_str.CAN_BS2=CAN_BS2_4tq;//Tbs2范围CAN_BS2_1tq ~	CAN_BS2_8tq
+	can_str.CAN_BS1=CAN_BS1_9tq;			//Tbs1范围CAN_BS1_1tq ~CAN_BS1_16tq
+	can_str.CAN_BS2=CAN_BS2_4tq;			//Tbs2范围CAN_BS2_1tq ~	CAN_BS2_8tq
 	can_str.CAN_Mode=CAN_Mode_Normal;
-	can_str.CAN_NART=ENABLE;//允许报文自动传送 
-	can_str.CAN_Prescaler=3;//分频系数3
-	can_str.CAN_RFLM=DISABLE;//报文不锁定,新的覆盖旧的 
-	can_str.CAN_SJW=CAN_SJW_1tq;//重新同步跳跃宽度
-	can_str.CAN_TTCM=DISABLE;	//非时间触发通信模式 
+	can_str.CAN_NART=ENABLE;				//允许报文自动传送 
+	can_str.CAN_Prescaler=3;				//分频系数3
+	can_str.CAN_RFLM=DISABLE;				//报文不锁定,新的覆盖旧的 
+	can_str.CAN_SJW=CAN_SJW_1tq;			//重新同步跳跃宽度
+	can_str.CAN_TTCM=DISABLE;				//非时间触发通信模式 
 	can_str.CAN_TXFP=DISABLE;
 	CAN_Init(CAN1,&can_str);
 	
-	can_fil_str.CAN_FilterActivation=ENABLE;//激活过滤器0
-	can_fil_str.CAN_FilterFIFOAssignment=CAN_Filter_FIFO0;//过滤器0关联到FIFO0
-	can_fil_str.CAN_FilterIdHigh=0x0000;//ID最大化
+	can_fil_str.CAN_FilterActivation=ENABLE;				//激活过滤器0
+	can_fil_str.CAN_FilterFIFOAssignment=CAN_Filter_FIFO0;	//过滤器0关联到FIFO0
+	can_fil_str.CAN_FilterIdHigh=0x0000;					//ID最大化
 	can_fil_str.CAN_FilterIdLow=0x0000;
 	can_fil_str.CAN_FilterMaskIdHigh    =   0x0000;
     can_fil_str.CAN_FilterMaskIdLow     =   0x0000;
     can_fil_str.CAN_FilterMode          =   CAN_FilterMode_IdMask;
-    can_fil_str.CAN_FilterNumber        =   0;//过滤器0
+    can_fil_str.CAN_FilterNumber        =   0;				//过滤器0
     can_fil_str.CAN_FilterScale         =   CAN_FilterScale_32bit;//32位 
     CAN_FilterInit(&can_fil_str);
 	/******************************************************************/
 
-	CAN_ITConfig(CAN1,CAN_IT_FMP0,ENABLE);//FIFO0消息挂号中断允许,每接收一次进一次中断	    
+	CAN_ITConfig(CAN1,CAN_IT_FMP0,ENABLE);					//FIFO0消息挂号中断允许,每接收一次进一次中断	    
   
-    NVIC_InitStructure.NVIC_IRQChannel = CAN1_RX0_IRQn;//
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;     // 主优先级为1
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;            // 次优先级为0
+    NVIC_InitStructure.NVIC_IRQChannel = CAN1_RX0_IRQn;				//
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;     	// 主优先级为1
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;            	// 次优先级为0
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 }
@@ -88,7 +88,7 @@ void CAN1_RX0_IRQHandler(void)
 	}
 	
 	//底盘电机转速读取,机械角度暂时没用
-	if(RxMessage.StdId == 0x201)//左前
+	if(RxMessage.StdId == 0x201)											//左前
 	{
 		rota_measure   = ((int16_t)RxMessage.Data[0]<<8|RxMessage.Data[1]);
 		CHASSIS_UpdateMotorAngle(LEFT_FRON_201, rota_measure);
@@ -100,7 +100,7 @@ void CAN1_RX0_IRQHandler(void)
 		CHASSIS_UpdateMotorCur(LEFT_FRON_201, current_measure);
 	}
 	
-	if(RxMessage.StdId == 0x202)//右前
+	if(RxMessage.StdId == 0x202)											//右前
 	{
 		rota_measure   = ((int16_t)RxMessage.Data[0]<<8|RxMessage.Data[1]);
 		CHASSIS_UpdateMotorAngle(RIGH_FRON_202, rota_measure);
@@ -112,7 +112,7 @@ void CAN1_RX0_IRQHandler(void)
 		CHASSIS_UpdateMotorCur(RIGH_FRON_202, current_measure);
 	}
 	
-	if(RxMessage.StdId == 0x203)//左后
+	if(RxMessage.StdId == 0x203)											//左后
 	{
 		rota_measure   = ((int16_t)RxMessage.Data[0]<<8|RxMessage.Data[1]);
 		CHASSIS_UpdateMotorAngle(LEFT_BACK_203, rota_measure);
@@ -124,7 +124,7 @@ void CAN1_RX0_IRQHandler(void)
 		CHASSIS_UpdateMotorCur(LEFT_BACK_203, current_measure);
 	}
 	
-	if(RxMessage.StdId == 0x204)//右后
+	if(RxMessage.StdId == 0x204)											//右后
 	{
 		rota_measure   = ((int16_t)RxMessage.Data[0]<<8|RxMessage.Data[1]);
 		CHASSIS_UpdateMotorAngle(RIGH_BACK_204, rota_measure);
@@ -137,13 +137,13 @@ void CAN1_RX0_IRQHandler(void)
 	}
 	
 	//云台电机机械角度读取
-	if(RxMessage.StdId == 0x205)//yaw轴电机
+	if(RxMessage.StdId == 0x205)											//yaw轴电机
 	{
 		rota_measure  = ((int16_t)RxMessage.Data[0]<<8|RxMessage.Data[1]);
 		GIMBAL_UpdateAngle(YAW, rota_measure);
 	}
 	
-	if(RxMessage.StdId == 0x206)//pitch轴电机
+	if(RxMessage.StdId == 0x206)											//pitch轴电机
 	{
 		rota_measure  = ((int16_t)RxMessage.Data[0]<<8|RxMessage.Data[1]);
 		GIMBAL_UpdateAngle(PITCH, rota_measure);
@@ -160,10 +160,10 @@ void CAN1_Chassis_QueueSend(float *PID_chassis)
 {
 	CanTxMsg can_msg;
 
-	can_msg.StdId=0x200;	 // 标准标识符
+	can_msg.StdId=0x200;	 			// 标准标识符
     can_msg.IDE=CAN_ID_STD;		  
-    can_msg.RTR=CAN_RTR_DATA;		  // 消息类型为数据帧，一帧8位
-    can_msg.DLC=8;							 // 发送8帧信息
+    can_msg.RTR=CAN_RTR_DATA;		  	// 消息类型为数据帧，一帧8位
+    can_msg.DLC=8;						// 发送8帧信息
 	
 	can_msg.Data[0]=(u8)((int16_t)PID_chassis[0]>>8);
 	can_msg.Data[1]=(u8)((int16_t)PID_chassis[0]);
@@ -174,7 +174,7 @@ void CAN1_Chassis_QueueSend(float *PID_chassis)
 	can_msg.Data[6]=(u8)((int16_t)PID_chassis[3]>>8);
 	can_msg.Data[7]=(u8)((int16_t)PID_chassis[3]);  
 	
-	xQueueSend(CAN1_Queue,&can_msg,1);//向队列中填充内容
+	xQueueSend(CAN1_Queue,&can_msg,1);		//向队列中填充内容
 }
 
 /**
@@ -186,10 +186,10 @@ void CAN1_Chassis_Send(float *PID_chassis)
 {
 	CanTxMsg can_msg;
 
-	can_msg.StdId=0x200;	 // 标准标识符
+	can_msg.StdId=0x200;	 			// 标准标识符
     can_msg.IDE=CAN_ID_STD;		  
-    can_msg.RTR=CAN_RTR_DATA;		  // 消息类型为数据帧，一帧8位
-    can_msg.DLC=8;							 // 发送8帧信息
+    can_msg.RTR=CAN_RTR_DATA;		  	// 消息类型为数据帧，一帧8位
+    can_msg.DLC=8;						// 发送8帧信息
 	
 	can_msg.Data[0]=(u8)((int16_t)PID_chassis[0]>>8);
 	can_msg.Data[1]=(u8)((int16_t)PID_chassis[0]);
@@ -200,7 +200,7 @@ void CAN1_Chassis_Send(float *PID_chassis)
 	can_msg.Data[6]=(u8)((int16_t)PID_chassis[3]>>8);
 	can_msg.Data[7]=(u8)((int16_t)PID_chassis[3]);  
 	
-//	xQueueSend(CAN1_Queue,&can_msg,1);//向队列中填充内容
+//	xQueueSend(CAN1_Queue,&can_msg,1);		//向队列中填充内容
 	CAN_Transmit(CAN1, &can_msg);
 }
 
@@ -213,14 +213,14 @@ void CAN1_Cloud_QueueSend(float *PID_6623)
 {
 	CanTxMsg can_msg;
 	
-	can_msg.StdId=0x1FF;	 // 标准标识符为0x1FF
+	can_msg.StdId=0x1FF;	 			// 标准标识符为0x1FF
     can_msg.IDE=CAN_ID_STD;		  
-    can_msg.RTR=CAN_RTR_DATA;		  // 消息类型为数据帧，一帧8位
-    can_msg.DLC=8;							 // 发送8帧信息
+    can_msg.RTR=CAN_RTR_DATA;		  	// 消息类型为数据帧，一帧8位
+    can_msg.DLC=8;						// 发送8帧信息
 	
-	can_msg.Data[0]=(u8)((int16_t)PID_6623[0]>>8);//yaw
+	can_msg.Data[0]=(u8)((int16_t)PID_6623[0]>>8);	//yaw
 	can_msg.Data[1]=(u8)((int16_t)PID_6623[0]);
-	can_msg.Data[2]=(u8)((int16_t)PID_6623[1]>>8);//pitch
+	can_msg.Data[2]=(u8)((int16_t)PID_6623[1]>>8);	//pitch
 	can_msg.Data[3]=(u8)((int16_t)PID_6623[1]);
 	can_msg.Data[4]=0;//roll
 	can_msg.Data[5]=0;
@@ -239,21 +239,21 @@ void CAN1_Cloud_Send(float *PID_6623)
 {
 	CanTxMsg can_msg;
 	
-	can_msg.StdId=0x1FF;	 // 标准标识符为0x1FF
+	can_msg.StdId=0x1FF;	 			// 标准标识符为0x1FF
     can_msg.IDE=CAN_ID_STD;		  
-    can_msg.RTR=CAN_RTR_DATA;		  // 消息类型为数据帧，一帧8位
-    can_msg.DLC=8;							 // 发送8帧信息
+    can_msg.RTR=CAN_RTR_DATA;		  	// 消息类型为数据帧，一帧8位
+    can_msg.DLC=8;						// 发送8帧信息
 	
-	can_msg.Data[0]=(u8)((int16_t)PID_6623[0]>>8);//yaw
+	can_msg.Data[0]=(u8)((int16_t)PID_6623[0]>>8);		//yaw
 	can_msg.Data[1]=(u8)((int16_t)PID_6623[0]);
-	can_msg.Data[2]=(u8)((int16_t)PID_6623[1]>>8);//pitch
+	can_msg.Data[2]=(u8)((int16_t)PID_6623[1]>>8);		//pitch
 	can_msg.Data[3]=(u8)((int16_t)PID_6623[1]);
 	can_msg.Data[4]=0;//roll
 	can_msg.Data[5]=0;
 	can_msg.Data[6]=0;
 	can_msg.Data[7]=0;        
 	
-//	xQueueSend(CAN1_Queue,&can_msg,1);//向队列中填充内容 
+//	xQueueSend(CAN1_Queue,&can_msg,1);					//向队列中填充内容 
 	CAN_Transmit(CAN1, &can_msg);
 }
 

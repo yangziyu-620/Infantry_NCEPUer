@@ -52,10 +52,10 @@ void UART4_Init(void)
 	xGpioInit.GPIO_Pin = GPIO_PIN_RX;//1
 	GPIO_Init( GPIO_RX, &xGpioInit );
 
-	xUsartInit.USART_BaudRate            = 115200;   //波特率
-	xUsartInit.USART_WordLength          = USART_WordLength_8b;//字长8比特
-	xUsartInit.USART_StopBits            = USART_StopBits_1;//一个停止位
-	xUsartInit.USART_Parity              = USART_Parity_No;//无奇偶校验
+	xUsartInit.USART_BaudRate            = 115200;   				//波特率
+	xUsartInit.USART_WordLength          = USART_WordLength_8b;		//字长8比特
+	xUsartInit.USART_StopBits            = USART_StopBits_1;		//一个停止位
+	xUsartInit.USART_Parity              = USART_Parity_No;			//无奇偶校验
 	xUsartInit.USART_Mode                = USART_Mode_Tx | USART_Mode_Rx;
 	xUsartInit.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 
@@ -119,7 +119,7 @@ void UART4_IRQHandler(void)
 		
 		Usart4_Clean_IDLE_Flag = VISION_BUFFER_LEN - DMA_GetCurrDataCounter(DMA1_Stream2);
 
-		Vision_Read_Data(Com4_Vision_Buffer);//读取视觉数据	
+		Vision_Read_Data(Com4_Vision_Buffer);				//读取视觉数据	
 		
 		memset(Com4_Vision_Buffer, 0, 100);
 		
