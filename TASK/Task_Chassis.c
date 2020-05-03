@@ -191,17 +191,17 @@ uint32_t  Miss_Mode_Time = 0;//自动闪避已过时长
 //float  Corgi_XY_Compensation = 1.1;//扭屁股模式下的Z轴速度补偿
 
 
-#define RADIUS     76      //麦轮半径
-#define PERIMETER  478     //麦轮周长
-#define WHEELTRACK 360//398     //左右轮距
-#define WHEELBASE  300     //前后轴距
-#define GIMBAL_X_OFFSET 0//75  //云台相对底盘中心的前后偏移量
-#define GIMBAL_Y_OFFSET 0 //云台相对底盘中心的左右偏移量
+#define RADIUS     76      			//麦轮半径
+#define PERIMETER  478     			//麦轮周长
+#define WHEELTRACK 360	//398     	//左右轮距
+#define WHEELBASE  300     			//前后轴距
+#define GIMBAL_X_OFFSET 0	//75  	//云台相对底盘中心的前后偏移量
+#define GIMBAL_Y_OFFSET 0 			//云台相对底盘中心的左右偏移量
 #define CHASSIS_DECELE_RATIO (1.0f/19.0f)  //电机减数比
 #define RADIAN_COEF 57.3f  
 
-extKalman_t Chassis_Error_Kalman;//定义一个kalman指针
-//extKalman_t Chassis_Speed_Kalman[4];//定义一个kalman指针
+extKalman_t Chassis_Error_Kalman;			//定义一个kalman指针
+//extKalman_t Chassis_Speed_Kalman[4];		//定义一个kalman指针
 
 /************************************************************************************/
 /************************************************************************************/
@@ -244,9 +244,9 @@ void Task_Chassis(void *pvParameters)
 			}
 		}
 		
-		Chassis_Omni_Move_Calculate();//移动计算
+		Chassis_Omni_Move_Calculate();	//移动计算
 
-		Chassis_MotorOutput();//底盘PID计算
+		Chassis_MotorOutput();			//底盘PID计算
 //		if(Cap_Out_Can_Open() == TRUE)
 //		{}//电容放电，解除功率限制，防止电容充电消耗剩余能量造成速度减小
 //		else
@@ -270,13 +270,13 @@ void Task_Chassis(void *pvParameters)
 void CHASSIS_InitArgument(void)
 {
 	/* 灵敏度 */
-	kRc_Mech_Chassis_Standard = 14.f;//调节摇杆灵敏度,调节速度
-	kRc_Mech_Chassis_Revolve  = 11.4f;//10.6;//调节机械模式摇杆扭头灵敏度(太小会影响最高速度)
-	kRc_Gyro_Chassis_Standard = 14;//陀螺仪模式摇杆平移灵敏度
-	kRc_Gyro_Chassis_Revolve  = -10;//10;//-7.1;//陀螺仪模式摇杆扭头灵敏度,太大会震荡
+	kRc_Mech_Chassis_Standard = 14.f;		//调节摇杆灵敏度,调节速度
+	kRc_Mech_Chassis_Revolve  = 11.4f;		//10.6;//调节机械模式摇杆扭头灵敏度(太小会影响最高速度)
+	kRc_Gyro_Chassis_Standard = 14;			//陀螺仪模式摇杆平移灵敏度
+	kRc_Gyro_Chassis_Revolve  = -10;		//10;//-7.1;//陀螺仪模式摇杆扭头灵敏度,太大会震荡
 	
-	kKey_Mech_Chassis_Revolve = 40;//键盘机械模式下扭头速度响应快慢,别太大,不然扭头太快
-	kKey_Gyro_Chassis_Revolve = -10;//-8.1;//注意正负,键盘陀螺仪模式下底盘跟随云台转动的速度,别给太大,否则震荡会很严重
+	kKey_Mech_Chassis_Revolve = 40;			//键盘机械模式下扭头速度响应快慢,别太大,不然扭头太快
+	kKey_Gyro_Chassis_Revolve = -10;//-8.1;	//注意正负,键盘陀螺仪模式下底盘跟随云台转动的速度,别给太大,否则震荡会很严重
 	
 	/* 底盘PID参数 */
 #if		INFANTRY_DEBUG_ID == DEBUG_ID_ZERO 
@@ -707,8 +707,8 @@ void Chassis_Keyboard_Move_Calculate( int16_t sMoveMax, int16_t sMoveRamp )
 
 			if (IF_KEY_PRESSED_S)
 			{
-				timeXFron = 0;//同理
-				//后退X是负
+				timeXFron = 0; //同理
+				               //后退X是负
 				if( Chassis_Move_X > (-sMoveMax)/2.5 )//转向突变,刚开始的一小段时间斜坡降低,防止轮子打滑浪费功率
 				{
 					timeInc_Saltation = TIME_INC_SALTATION;//以爬坡模式处理速度方向突变

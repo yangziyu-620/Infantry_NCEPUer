@@ -41,7 +41,7 @@ void UART4_Init(void)
 	GPIO_PinAFConfig( GPIO_TX, GPIO_PINSOURCE_TX, GPIO_AF_UART4 );//引脚复用
 	GPIO_PinAFConfig( GPIO_RX, GPIO_PINSOURCE_RX, GPIO_AF_UART4 ); 
 
-	xGpioInit.GPIO_Pin   = GPIO_PIN_TX;//0
+	xGpioInit.GPIO_Pin   = GPIO_PIN_TX;  //0
 	xGpioInit.GPIO_Mode  = GPIO_Mode_AF;
 	xGpioInit.GPIO_OType = GPIO_OType_PP;
 	xGpioInit.GPIO_Speed = GPIO_Speed_100MHz;
@@ -73,7 +73,7 @@ void UART4_Init(void)
 
 	//中断配置
 	xNvicInit.NVIC_IRQChannel                    = UART4_IRQn;
-	xNvicInit.NVIC_IRQChannelPreemptionPriority  = 0;//优先级
+	xNvicInit.NVIC_IRQChannelPreemptionPriority  = 0;			//优先级
 	xNvicInit.NVIC_IRQChannelSubPriority         = 0;
 	xNvicInit.NVIC_IRQChannelCmd                 = ENABLE;
 	NVIC_Init( &xNvicInit );		
@@ -85,7 +85,7 @@ void UART4_DMA_Init(void)
 	DMA_DeInit( DMA1_Stream_RX );
 	xCom4DMAInit.DMA_Channel = DMA_Channel_4;
 
-	xCom4DMAInit.DMA_DIR = DMA_DIR_PeripheralToMemory;//方向外设到存储器
+	xCom4DMAInit.DMA_DIR = DMA_DIR_PeripheralToMemory;			//方向外设到存储器
 
 	xCom4DMAInit.DMA_PeripheralBaseAddr  = (uint32_t)&(UART4->DR);
 	xCom4DMAInit.DMA_Memory0BaseAddr     = (uint32_t)Com4_Vision_Buffer;
