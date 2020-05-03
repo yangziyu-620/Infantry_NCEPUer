@@ -24,8 +24,8 @@
 *.la
 *.lo
 
-Project/Objects/
-Project/Listings/
+Project/Objects
+Project/Listings
 
 # Shared objects (inc. Windows DLLs)
 *.dll
