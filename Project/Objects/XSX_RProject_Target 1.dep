@@ -977,7 +977,7 @@ I (..\APP\super_cap.h)(0x5EAEC6A5)
 I (..\Libraries\cmsis\Include\arm_math.h)(0x5EAEC6A5)
 I (..\BSP\led.h)(0x5EAEC6A5)
 I (..\APP\kalman.h)(0x5EAEC6A5)
-F (..\TASK\Task_Revolver.c)(0x5EAEC6A6)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I..\APP -I..\BSP -I..\Libraries\inc -I..\Libraries\src -I..\Libraries\cmsis\Include -I..\Libraries\cmsis -I..\SYSTEM -I..\mpu6050 -I..\mpu6050\eMPL -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\TASK -I..\TIMER_TASK -I.\AppInfo -I..\Project --C99-I U:\RM2019\单片机部分\rm程序部分\步兵\Infantry_NCEPUer\Project\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F429xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM4 -D__FPU_PRESENT-o .\objects\task_revolver.o --omf_browse .\objects\task_revolver.crf --depend .\objects\task_revolver.d)
+F (..\TASK\Task_Revolver.c)(0x5EAEDD29)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I..\APP -I..\BSP -I..\Libraries\inc -I..\Libraries\src -I..\Libraries\cmsis\Include -I..\Libraries\cmsis -I..\SYSTEM -I..\mpu6050 -I..\mpu6050\eMPL -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\TASK -I..\TIMER_TASK -I.\AppInfo -I..\Project --C99-I U:\RM2019\单片机部分\rm程序部分\步兵\Infantry_NCEPUer\Project\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F429xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM4 -D__FPU_PRESENT-o .\objects\task_revolver.o --omf_browse .\objects\task_revolver.crf --depend .\objects\task_revolver.d)
 I (..\TASK\Task_Revolver.h)(0x5EAEC6A6)
 I (..\APP\system.h)(0x5EAEC6A5)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)
@@ -1028,7 +1028,7 @@ I (..\APP\friction.h)(0x5EAEC6A5)
 I (..\APP\vision.h)(0x5EAEC6A5)
 I (..\APP\super_cap.h)(0x5EAEC6A5)
 I (..\BSP\led.h)(0x5EAEC6A5)
-F (..\TASK\Task_Gimbal.c)(0x5EAEC6A6)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I..\APP -I..\BSP -I..\Libraries\inc -I..\Libraries\src -I..\Libraries\cmsis\Include -I..\Libraries\cmsis -I..\SYSTEM -I..\mpu6050 -I..\mpu6050\eMPL -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\TASK -I..\TIMER_TASK -I.\AppInfo -I..\Project --C99-I U:\RM2019\单片机部分\rm程序部分\步兵\Infantry_NCEPUer\Project\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F429xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM4 -D__FPU_PRESENT-o .\objects\task_gimbal.o --omf_browse .\objects\task_gimbal.crf --depend .\objects\task_gimbal.d)
+F (..\TASK\Task_Gimbal.c)(0x5EAEE1CF)(-c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I..\APP -I..\BSP -I..\Libraries\inc -I..\Libraries\src -I..\Libraries\cmsis\Include -I..\Libraries\cmsis -I..\SYSTEM -I..\mpu6050 -I..\mpu6050\eMPL -I..\FreeRTOS\include -I..\FreeRTOS\portable\RVDS\ARM_CM4F -I..\TASK -I..\TIMER_TASK -I.\AppInfo -I..\Project --C99-I U:\RM2019\单片机部分\rm程序部分\步兵\Infantry_NCEPUer\Project\RTE-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514" -DSTM32F429xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DARM_MATH_CM4 -D__FPU_PRESENT-o .\objects\task_gimbal.o --omf_browse .\objects\task_gimbal.crf --depend .\objects\task_gimbal.d)
 I (..\TASK\Task_Gimbal.h)(0x5EAEC6A6)
 I (..\APP\system.h)(0x5EAEC6A5)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5475F300)

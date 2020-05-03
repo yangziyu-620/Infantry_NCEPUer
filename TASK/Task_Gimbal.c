@@ -264,36 +264,6 @@ float TURNMode_Yaw_Back_Total;//按下C,yaw需要改变的角度值
 float TURNMode_Yaw_Turn_Total;//按下QE,yaw需要改变的角度值,正负代表左右转
 
 
-/**********************手打大符*******************/
-#define CONFIRM_BEGIN		0//刚进入手动打符，随便确认位置
-#define CONFIRM_CENTRE		1//确认圆心
-#define CONFIRM_RADIUS		2//确认半径
-#define CONFIRM_HIGH		3//确认高度
-#define CONFIRM_LOCATION	4//确认位置
-int Manual_Step = CONFIRM_BEGIN;//第一步确定圆心，第二步确定半径，第三步WASD确定位置
-float Manual_Pitch_Comp = 70;//手动抬头补偿
-float Buff_Pitch_Comp;//打符抬头自动补偿
-float Buff_Yaw_Comp;//打符红外左右自动补偿，因为红外可能装歪
-float Buff_Pitch_Comp_Gimbal;//打符抬头补偿,摄像头在云台
-float Buff_Yaw_Comp_Gimbal;
-
-float Base_Yaw_Comp_Gimbal;//吊射左右校准
-
-//打符校正镜头畸变
-float Buff_Pitch_Correct_Chassis;
-float Buff_Yaw_Correct_Chassis;
-float Buff_Pitch_Correct_Gimbal;
-float Buff_Yaw_Correct_Gimbal;
-
-float debug_y_mid;// = 5785;//5797;//视觉调坐标转换
-float debug_p_mid;// = 3450;//3522;//7.15m抬头差72机械角度,飓风电机,600pwm
-
-float gb_yaw_posit_error = 0;//位置差，用来判断是否移动到位
-float gb_pitch_posit_error = 0;//位置差，用来判断是否移动到位
-
-//刚进入打符判断
-bool is_firstime_into_buff = TRUE;
-
 /***************自瞄******************/
 
 //误差
@@ -651,27 +621,6 @@ void GIMBAL_InitArgument(void)
 		debug_kf_y_angcon = 220;//125;//115;//135;//预测量限幅
 		debug_kf_p_angcon = 45;//pitch预测量限幅
 		
-		//打符
-		//底盘
-		debug_y_mid 		= Mech_Mid_Yaw;
-		debug_p_mid 		= Mech_Mid_Pitch;
-		Buff_Pitch_Comp 	= 0;
-		Buff_Yaw_Comp   	= 0;
-		
-		//云台
-		//7.1米
-		Buff_Pitch_Comp_Gimbal = -54;//-52;//-25;//家里-52，单项赛-60		
-		//8米
-		//Buff_Pitch_Comp_Gimbal = -63;
-		
-		Buff_Yaw_Comp_Gimbal   = -27;//-30;
-
-		Buff_Pitch_Correct_Chassis  = 1;
-		Buff_Yaw_Correct_Chassis 	= 1;
-		Buff_Pitch_Correct_Gimbal	= 1;
-		Buff_Yaw_Correct_Gimbal		= 1;
-		
-		Base_Yaw_Comp_Gimbal = -27;//-30;
 		
 	#endif	
 	
@@ -1396,62 +1345,7 @@ void GIMBAL_Key_Ctrl(void)
 				GIMBAL_AUTO_Mode_Ctrl();//自瞄控制函数
 			}
 		break;
-		
-		/*--------------Ctrl+V键打小符----------------*/	
-		case GIMBAL_SM_BUFF:
-			//任意方向移动退出打符
-			if(IF_KEY_PRESSED_W || IF_KEY_PRESSED_S || IF_KEY_PRESSED_A || IF_KEY_PRESSED_D
-					|| IF_KEY_PRESSED_Q || IF_KEY_PRESSED_E)
-			{
-				actGimbal = GIMBAL_NORMAL;
-				modeGimbal = CLOUD_GYRO_MODE;//退出打符切回陀螺仪模式
-				
-				gb_yaw_posit_error   = 1000;
-				gb_pitch_posit_error = 1000;
-				
-				is_firstime_into_buff = TRUE;
-			}
-			else
-			{
-				#if 	BUFF_CAM_TYPE == BUFF_CAM_CHAS
-					modeGimbal = CLOUD_MECH_MODE;//打符时底盘不动
-					GIMBAL_BUFF_Mode_Ctrl_Chassis();//底盘打符
-				
-				#elif	BUFF_CAM_TYPE == BUFF_CAM_TYPE == BUFF_CAM_GIMB
-					modeGimbal = CLOUD_GYRO_MODE;//打符时底盘不动
-					GIMBAL_BUFF_Mode_Ctrl_Gimbal();//云台打符
-				
-				#endif
-			}		
-		break;	
-			
-		/*--------------Ctrl+F键打大符----------------*/	
-		case GIMBAL_BUFF:
-			//任意方向移动退出打符
-			if(IF_KEY_PRESSED_W || IF_KEY_PRESSED_S || IF_KEY_PRESSED_A || IF_KEY_PRESSED_D
-					|| IF_KEY_PRESSED_Q || IF_KEY_PRESSED_E || IF_KEY_PRESSED_V)
-			{
-				actGimbal = GIMBAL_NORMAL;
-				modeGimbal = CLOUD_GYRO_MODE;//退出打符切回陀螺仪模式
-				
-				gb_yaw_posit_error   = 1000;
-				gb_pitch_posit_error = 1000;
-				
-				is_firstime_into_buff = TRUE;
-			}
-			else
-			{
-				#if 	BUFF_CAM_TYPE == BUFF_CAM_CHAS
-					modeGimbal = CLOUD_MECH_MODE;//打符时底盘不动
-					GIMBAL_BUFF_Mode_Ctrl_Chassis();//底盘打符
-				
-				#elif	BUFF_CAM_TYPE == BUFF_CAM_TYPE == BUFF_CAM_GIMB
-					modeGimbal = CLOUD_GYRO_MODE;//打符时底盘不动
-					GIMBAL_BUFF_Mode_Ctrl_Gimbal();//云台打符
-				
-				#endif
-			}		
-		break;
+
 			
 		/*--------------C键吊射----------------*/
 		case GIMBAL_BASE:
@@ -1467,25 +1361,6 @@ void GIMBAL_Key_Ctrl(void)
 				GIMBAL_BASE_Mode_Ctrl();
 			}
 		break;
-		/*--------------Ctrl+G键手打大符----------------*/	
-//		case GIMBAL_MANUAL:
-//			//QEV退出
-//			if(IF_KEY_PRESSED_Q || IF_KEY_PRESSED_E || IF_KEY_PRESSED_V)
-//			{
-//				actGimbal   = GIMBAL_NORMAL;
-//				modeGimbal  = CLOUD_GYRO_MODE;//退出打符切回陀螺仪模式
-//				Manual_Step = CONFIRM_BEGIN;
-//				Manual_Pitch_Comp = 72;//重置补偿
-//			}
-//			else
-//			{
-//				modeGimbal = CLOUD_MECH_MODE;//打符时底盘不动
-//				GIMBAL_MANUAL_Mode_Ctrl();
-//			}		
-//		break;
-	}
-	
-}
 
 /**
   * @brief  限制云台与底盘分离角度
@@ -1493,6 +1368,7 @@ void GIMBAL_Key_Ctrl(void)
   * @retval void
   * @attention 
   */
+
 void Gimbal_Chass_Separ_Limit(void)
 {
 	if ( (GIMBAL_GetOffsetAngle() <= -CLOUD_SEPAR_ANGLE				//右过大
@@ -1545,7 +1421,6 @@ void Gimbal_Chass_Separ_Limit(void)
 	#endif
 }
 
-
 /*******************云台键盘模式各类模式小函数*******************/
 
 /**
@@ -1562,9 +1437,6 @@ void GIMBAL_NORMAL_Mode_Ctrl(void)
 	static uint32_t PressV_Time  = 0;//调头,500ms延时响应,1秒最多按2下
 	static uint32_t PressQ_Time  = 0;//90°,250ms延时响应,1秒最多按4下
     static uint32_t PressE_Time  = 0;//90°,250ms延时响应,1秒最多按4下
-	static uint32_t PressCF_Time  = 0;//打大符,400ms延时响应
-//	static uint32_t PressCG_Time  = 0;//手动打符,400ms延时响应
-	static uint32_t PressCV_Time  = 0;//打小符,400ms延时响应
 	static uint32_t Mouse_Yaw_Stop  = 0;//鼠标不动，结束响应
 	static uint32_t Mouse_Pitch_Stop  = 0;//鼠标不动，结束响应
 	
@@ -1580,7 +1452,6 @@ void GIMBAL_NORMAL_Mode_Ctrl(void)
 		modeGimbal = CLOUD_GYRO_MODE;
 	}
 
-	Manual_Step = CONFIRM_BEGIN;//退出手打大符步骤清零
 	
 	if ( !IF_KEY_PRESSED_CTRL && IF_KEY_PRESSED_V
 					&& Key_Ctrl_CurrentTime > PressV_Time)
@@ -1636,18 +1507,6 @@ void GIMBAL_NORMAL_Mode_Ctrl(void)
 	{
 		actGimbal = GIMBAL_AUTO;
 
-	}
-	/*----------------小符-----------------*/
-	else if(IF_KEY_PRESSED_V && IF_KEY_PRESSED_CTRL && Key_Ctrl_CurrentTime > PressCV_Time)//Ctrl+F打符,400ms响应一次
-	{
-		PressCV_Time = Key_Ctrl_CurrentTime + TIME_STAMP_400MS;
-		actGimbal = GIMBAL_SM_BUFF;
-	}
-	/*----------------大符-----------------*/
-	else if(IF_KEY_PRESSED_F && IF_KEY_PRESSED_CTRL && Key_Ctrl_CurrentTime > PressCF_Time)//Ctrl+F打符,400ms响应一次
-	{
-		PressCF_Time = Key_Ctrl_CurrentTime + TIME_STAMP_400MS;
-		actGimbal = GIMBAL_BUFF;
 	}
 	/*----------------吊射-----------------*/
 	else if(IF_KEY_PRESSED_C && !IF_MOUSE_PRESSED_RIGH && !IF_RC_SW1_MID)
@@ -2163,224 +2022,6 @@ bool Gimb_If_Small_Top(float angle)
 }
 
 /**
-  * @brief  打符模式，摄像头位于底盘
-  * @param  void
-  * @retval void
-  * @attention 红方打红色,蓝方打蓝色,停留3秒激活打符,可能需要关激光
-  *  5倍热量冷却,桥面离地1米2,大风车中心离地2米5,内径70cm,外径80cm
-  *  选取绝对坐标（云台机械中心为0），在此基础上叠加视觉坐标，将
-  *  角度值转换成云台机械角度     x/8192 = angle/360;
-  */
-uint32_t Vision_Buff_Time[2];//测试帧率
-int vision_buff_time_js;
-
-float gb_yaw_angle = 0;//获取角度
-float gb_pitch_angle = 0;//获取角度
-float debug_gb_y_error = 0;//机械角度测量值与目标值之间的误差
-float debug_gb_p_error = 0;//机械角度测量值与目标值之间的误差
-float buff_y_raw;//滤波后的值
-float buff_p_raw;//滤波后的值
-float gb_pitch_compe = 0;//抬头补偿
-//float gb_t;//子弹飞行时间
-//float gb_dist = 7.15;//打符距离
-//float gb_v = 27.5;//子弹出膛速度
-//float gb_vd;//子弹水平方向速度
-void GIMBAL_BUFF_Mode_Ctrl_Chassis(void)
-{
-	float gb_yaw_mech = 0;
-	float gb_pitch_mech = 0;
-	float gb_y_ref = 0;
-	float gb_p_ref = 0;
-	
-	
-	
-	/*- 帧率测试 -*/
-	if( Vision_If_Update() == TRUE //identify_buff=2也是识别到了
-			&& (VisionRecvData.identify_buff == TRUE || VisionRecvData.identify_buff == 2) )//视觉数据更新了
-	{
-		//获取角度
-		Vision_Buff_Error_Angle_Yaw(&gb_yaw_angle);
-		Vision_Buff_Error_Angle_Pitch(&gb_pitch_angle);
-		
-		Vision_Buff_Time[NOW] = xTaskGetTickCount();//获取新数据到来时的时间
-		Vision_Clean_Update_Flag();//一定要记得清零,否则会一直执行
-	}
-	
-	if(Vision_Buff_Time[NOW] != Vision_Buff_Time[LAST])//更新新数据到来的时间
-	{
-		vision_buff_time_js = Vision_Buff_Time[NOW] - Vision_Buff_Time[LAST];//计算视觉延迟
-		Vision_Buff_Time[LAST] = Vision_Buff_Time[NOW];
-	}
-	/*--------------------------------*/
-	
-	
-	buff_y_raw = KalmanFilter(&Gimbal_Buff_Yaw_Error_Kalman, gb_yaw_angle);
-	buff_p_raw = KalmanFilter(&Gimbal_Buff_Pitch_Error_Kalman, gb_pitch_angle);
-
-//	//抬头补偿
-//	// 1/2gt^2  g=10  t = dist/vd   vd=v*cos(p)
-//	gb_vd = gb_v * cos(fabs(buff_p_raw*PI/180.0f));//计算子弹水平方向速度，角度还没想好怎么算，是否要用实际角度，因为云台会滞后
-//	gb_t = gb_dist / gb_vd;//计算子弹飞行时间	
-//	gb_pitch_compe = 0.5f * 10 * gb_t * gb_t;//  1/2 g t^2
-	
-	//欧拉角转换成机械角
-//	gb_yaw_mech   = gb_yaw_angle   / 360.0f * 8192;//未滤波
-//	gb_pitch_mech = gb_pitch_angle / 360.0f * 8192;//未滤波
-	gb_yaw_mech   = buff_y_raw / 360.0f * 8192 * Buff_Yaw_Correct_Chassis;
-	gb_pitch_mech = buff_p_raw / 360.0f * 8192 * Buff_Pitch_Correct_Chassis;//未加抬头补偿
-//	gb_pitch_mech = buff_p_raw / 360.0f * 8192;// - gb_pitch_compe/VisionRecvData.distance*180/PI/360.0f*8192;//加了抬头补偿
-	
-	//暂存目标位置
-	gb_y_ref = /*Mech_Mid_Yaw*/debug_y_mid   + gb_yaw_mech;
-	gb_p_ref = /*Mech_Mid_Pitch*/debug_p_mid + gb_pitch_mech;
-	
-	//移动,identify_buff为1或2都是识别到
-	if(VisionRecvData.identify_buff == TRUE || VisionRecvData.identify_buff == 2)
-	{
-		Cloud_Angle_Target[YAW][MECH]   = gb_y_ref + Buff_Yaw_Comp;
-		Cloud_Angle_Target[PITCH][MECH] = gb_p_ref + Buff_Pitch_Comp;
-	}
-	else
-	{
-		Cloud_Angle_Target[YAW][MECH]   += 0;//debug_y_mid;//Mech_Mid_Yaw;
-		Cloud_Angle_Target[PITCH][MECH] += 0;//debug_p_mid;//Mech_Mid_Pitch;
-	}
-	
-	//计算误差，用来判断是否瞄准到位
-	gb_yaw_posit_error   = Cloud_Angle_Measure[YAW][MECH]   - Cloud_Angle_Target[YAW][MECH];
-	gb_pitch_posit_error = Cloud_Angle_Measure[PITCH][MECH] - Cloud_Angle_Target[PITCH][MECH];
-	
-	//测试误差，看看有无滞后现象
-	debug_gb_y_error = gb_yaw_posit_error;
-	debug_gb_p_error = gb_pitch_posit_error;
-}
-
-/**
-  * @brief  打符模式，摄像头位于云台
-  * @param  void
-  * @retval void
-  * @attention 红方打红色,蓝方打蓝色,停留3秒激活打符,可能需要关激光
-  *  5倍热量冷却,桥面离地1米2,大风车中心离地2米5,内径70cm,外径80cm
-  *  pitch仍是机械模式，跟自瞄一样
-  */
-float gb_yaw_angle_gim = 0;//获取角度
-float gb_pitch_angle_gim = 0;//获取角度
-float buff_gimb_ramp_yaw = 72;//120;//国赛72，单项赛120
-float buff_gimb_ramp_pitch = 72;//120;
-float buff_into_time = 0;
-void GIMBAL_BUFF_Mode_Ctrl_Gimbal(void)
-{
-	float gb_yaw_gyro = 0;
-	float gb_pitch_mech = 0;
-	static float y_mid = 0;
-	static float p_mid = 0;
-	
-	static float yaw_buff_angle_raw, pitch_buff_angle_raw;//卡尔曼滤波角度测量值
-//	static float yaw_buff_angle_ref;//记录目标角度
-//	static float pitch_buff_angle_ref;//记录目标角度
-	static float shoot_time = 0;
-	static float lost_time  = 0;//一段时间没识别到，归中
-	
-	
-	if(is_firstime_into_buff == TRUE)
-	{
-		is_firstime_into_buff = FALSE;
-		buff_into_time = 0;
-		
-		//记录进入时的角度
-		y_mid = Cloud_Angle_Measure[YAW][GYRO];
-		p_mid = Cloud_Angle_Target[PITCH][MECH];
-	}
-	
-	if(is_firstime_into_buff == FALSE)//进入一段时间
-	{
-		buff_into_time++;
-	}
-	
-	/*- 帧率测试 -*/
-	if( Vision_If_Update() == TRUE //identify_buff=2也是识别到了
-			&& (VisionRecvData.identify_buff == TRUE || VisionRecvData.identify_buff == 2) )//视觉数据更新了
-	{	
-		//像素点
-		Vision_Error_Yaw(&gb_yaw_angle_gim);
-		Vision_Error_Pitch(&gb_pitch_angle_gim);
-		gb_yaw_gyro   = gb_yaw_angle_gim + Buff_Yaw_Comp_Gimbal;
-		gb_pitch_mech = gb_pitch_angle_gim + Buff_Pitch_Comp_Gimbal;//未加抬头补偿
-		/******************************************************************/
-	
-		yaw_buff_angle_raw 	 = Cloud_Angle_Measure[YAW][GYRO]   + gb_yaw_gyro;
-		pitch_buff_angle_raw = Cloud_Angle_Measure[PITCH][MECH] + gb_pitch_mech;
-		
-		Vision_Buff_Time[NOW] = xTaskGetTickCount();//获取新数据到来时的时间
-		Vision_Clean_Update_Flag();//一定要记得清零,否则会一直执行
-	}
-	
-	if(Vision_Buff_Time[NOW] != Vision_Buff_Time[LAST])//更新新数据到来的时间
-	{
-		vision_buff_time_js = Vision_Buff_Time[NOW] - Vision_Buff_Time[LAST];//计算视觉延迟
-		Vision_Buff_Time[LAST] = Vision_Buff_Time[NOW];
-	}
-	/*--------------------------------*/
-	
-//	yaw_buff_angle_ref   = KalmanFilter(&Gimbal_Buff_Yaw_Error_Gim_Kalman, yaw_buff_angle_raw);
-//	pitch_buff_angle_ref = KalmanFilter(&Gimbal_Buff_Pitch_Error_Gim_Kalman, pitch_buff_angle_raw);
-
-	//移动,identify_buff为1或2都是识别到
-	if(VisionRecvData.identify_buff == TRUE || VisionRecvData.identify_buff == 2)
-	{
-		if(buff_into_time > 100)//第一次进入打符，不给太快响应
-		{
-			Cloud_Angle_Target[YAW][GYRO]   = RAMP_float(yaw_buff_angle_raw, Cloud_Angle_Measure[YAW][GYRO], buff_gimb_ramp_yaw);
-			Cloud_Angle_Target[PITCH][MECH] = RAMP_float(pitch_buff_angle_raw, Cloud_Angle_Measure[PITCH][MECH], buff_gimb_ramp_pitch);
-		}
-		else
-		{
-			Cloud_Angle_Target[YAW][GYRO]   = y_mid;
-			Cloud_Angle_Target[PITCH][MECH] = p_mid;
-		}
-		lost_time = 0;
-	}
-	else
-	{
-		Cloud_Angle_Target[YAW][GYRO]   += 0;//debug_y_mid;//Mech_Mid_Yaw;
-		Cloud_Angle_Target[PITCH][MECH] += 0;//debug_p_mid;//Mech_Mid_Pitch;
-		
-		lost_time++;
-		
-		//连续一段时间没识别到
-		if(lost_time>300)
-		{
-			Cloud_Angle_Target[YAW][GYRO]	= y_mid;
-			Cloud_Angle_Target[PITCH][MECH] = p_mid;
-		}
-	}
-	
-
-	
-	//计算误差，用来判断是否瞄准到位
-	if(VisionRecvData.identify_buff == FALSE)
-	{
-		shoot_time++;
-		if(shoot_time > 100)//连续200MS没识别到,误差加大，防止退出重进后立马打弹
-		{
-			gb_yaw_posit_error = 1000;
-			gb_pitch_posit_error = 1000;
-		}
-	}
-	else
-	{
-		shoot_time = 0;
-		
-		if(buff_into_time > 200)
-		{
-			gb_yaw_posit_error   = Cloud_Angle_Measure[YAW][GYRO]   - yaw_buff_angle_raw;
-			gb_pitch_posit_error = Cloud_Angle_Measure[PITCH][MECH] - pitch_buff_angle_raw;
-		}
-	}
-
-}
-
-/**
   * @brief  桥头吊射模式
   * @param  void
   * @retval void
@@ -2391,6 +2032,7 @@ void GIMBAL_BASE_Mode_Ctrl(void)
 	static uint32_t Mouse_Yaw_Stop  = 0;//鼠标不动，结束响应
 	static uint32_t Mouse_Pitch_Stop  = 0;//鼠标不动，结束响应
 	static float yaw_base_angle_raw = 0;
+	float Base_Yaw_Comp_Gimbal;
 	
 	float base_yaw_gyro = 0;
 	
@@ -2483,167 +2125,6 @@ void GIMBAL_BASE_Mode_Ctrl(void)
 		}	
 	}
 }
-
-/**
-  * @brief  手动打符模式
-  * @param  void
-  * @retval void
-  * @attention 红方打红色,蓝方打蓝色,停留3秒激活打符,可能需要关激光
-  *  5倍热量冷却,桥面离地1米2,大风车中心离地2米5,内径70cm,外径80cm
-  *  Ctrl+F进入，第一次右键选择圆心，第二次右键选择左右半径
-  *  第三次右键选择上下高度，鼠标粗调，WASD微调
-  *  调节完毕后WASD表示上下左右，此时鼠标仅能抬头低头调抬头补偿
-  *  选择圆心后粗略左移，给操作手细调
-  *  选择半径后粗略沿中心上移，给操作手细调
-  */
-//切换标志
-bool Manual_Switch_Right = 1;//用来判断右键响应
-
-float Manual_Centre_Yaw, Manual_Centre_Pitch;//圆心
-float Manual_Radius;//半径
-float Manual_High;//高度
-//int Manual_Step = 0;//第一步确定圆心，第二步确定半径，第三步WASD确定位置
-void GIMBAL_MANUAL_Mode_Ctrl(void)
-{
-	if(!IF_MOUSE_PRESSED_RIGH)//右键松开
-	{
-		Manual_Switch_Right = 1;//可以切换步骤
-	}
-	
-	/*- 0 保持进入前角度不变 -*/
-	if(Manual_Step == CONFIRM_BEGIN)//刚进入手动打符,角度定住不动
-	{
-		Cloud_Angle_Target[YAW][MECH]   = Cloud_Angle_Measure[YAW][MECH];
-		Cloud_Angle_Target[PITCH][MECH] = Cloud_Angle_Measure[PITCH][MECH];
-		Manual_Step = CONFIRM_CENTRE;//进入下一步确认圆心
-	}
-	
-	/*- 1 确定圆心 -*/
-	if(Manual_Step == CONFIRM_CENTRE)//调节圆心
-	{
-		//鼠标粗调
-		Cloud_Angle_Target[YAW][MECH]   += MOUSE_X_MOVE_SPEED * (kKey_Gyro_Yaw/5)*YAW_POSITION;
-		Cloud_Angle_Target[PITCH][MECH] += MOUSE_Y_MOVE_SPEED * (kKey_Mech_Pitch/5);
-		//键盘微调
-		if(IF_KEY_PRESSED_W)//上
-		{
-			Cloud_Angle_Target[PITCH][MECH] -= 0.05f;
-		}
-		else if(IF_KEY_PRESSED_S)//下
-		{
-			Cloud_Angle_Target[PITCH][MECH] += 0.05f;
-		}
-		else if(IF_KEY_PRESSED_A)//左
-		{
-			Cloud_Angle_Target[YAW][MECH]   += 0.05f*YAW_POSITION;
-		}
-		else if(IF_KEY_PRESSED_D)//右
-		{
-			Cloud_Angle_Target[YAW][MECH]   -= 0.05f*YAW_POSITION;
-		}
-	}
-	
-	if( IF_MOUSE_PRESSED_RIGH && Manual_Step == CONFIRM_CENTRE
-			&& Manual_Switch_Right == 1 )
-	{
-		//确定圆心
-		Manual_Centre_Yaw   = Cloud_Angle_Measure[YAW][MECH];
-		Manual_Centre_Pitch = Cloud_Angle_Measure[PITCH][MECH];
-		Cloud_Angle_Target[YAW][MECH] = Manual_Centre_Yaw + 100*YAW_POSITION;//提前动，方便操作手调半径
-		Manual_Step = CONFIRM_RADIUS;//进入下一步确认半径
-		Manual_Switch_Right = 0;
-	}
-	
-	/*- 2 确定半径 -*/
-	if(Manual_Step == CONFIRM_RADIUS)//调节半径
-	{
-		//鼠标粗调
-		Cloud_Angle_Target[YAW][MECH]   += MOUSE_X_MOVE_SPEED * (kKey_Gyro_Yaw/5)*YAW_POSITION;
-		//键盘微调
-		if(IF_KEY_PRESSED_A)//左
-		{
-			Cloud_Angle_Target[YAW][MECH]   += 0.05f*YAW_POSITION;
-		}
-		else if(IF_KEY_PRESSED_D)//右
-		{
-			Cloud_Angle_Target[YAW][MECH]   -= 0.05f*YAW_POSITION;
-		}
-	}
-	
-	if( IF_MOUSE_PRESSED_RIGH && Manual_Step == CONFIRM_RADIUS
-			&& Manual_Switch_Right == 1 )
-	{
-		//计算半径
-		Manual_Radius = fabs(Cloud_Angle_Measure[YAW][MECH] - Manual_Centre_Yaw);
-		Cloud_Angle_Target[PITCH][MECH] = Manual_Centre_Pitch - Manual_Radius;//方便操作手调高度
-		Manual_Step = CONFIRM_HIGH;//进入下一步确认位置
-		Manual_Switch_Right = 0;
-	}
-	
-	/*- 3 确认上下高度 -*/
-	if(Manual_Step == CONFIRM_HIGH)//调节高度
-	{
-		//鼠标粗调
-		Cloud_Angle_Target[YAW][MECH] = Manual_Centre_Yaw;
-		Cloud_Angle_Target[PITCH][MECH] += MOUSE_Y_MOVE_SPEED * (kKey_Mech_Pitch/5);
-		
-		//键盘微调
-		if(IF_KEY_PRESSED_W)//上
-		{
-			Cloud_Angle_Target[PITCH][MECH] -= 0.05f;
-		}
-		else if(IF_KEY_PRESSED_S)//下
-		{
-			Cloud_Angle_Target[PITCH][MECH] += 0.05f;
-		}
-	}
-	
-	if( IF_MOUSE_PRESSED_RIGH && Manual_Step == CONFIRM_HIGH
-			&& Manual_Switch_Right == 1 )
-	{
-		Manual_High = fabs(Cloud_Angle_Measure[PITCH][MECH] - Manual_Centre_Pitch);
-		Manual_Step = CONFIRM_LOCATION;//进入下一步确认位置
-		Manual_Switch_Right = 0;
-	}
-	
-	/*- 4 正式开始手打，注意云台方向 -*/
-	if(Manual_Step == CONFIRM_LOCATION)
-	{
-		//鼠标粗调抬头补偿
-		Manual_Pitch_Comp -= MOUSE_Y_MOVE_SPEED * (kKey_Mech_Pitch/10);
-	}		
-	
-	if(Manual_Step == CONFIRM_LOCATION
-			&& IF_KEY_PRESSED_W)//上
-	{
-		Cloud_Angle_Target[YAW][MECH]   = Manual_Centre_Yaw;
-		Cloud_Angle_Target[PITCH][MECH] = Manual_Centre_Pitch - Manual_High + (-Manual_Pitch_Comp);
-	}
-	else if(Manual_Step == CONFIRM_LOCATION
-				&& IF_KEY_PRESSED_S)//下
-	{
-		Cloud_Angle_Target[YAW][MECH]   = Manual_Centre_Yaw;
-		Cloud_Angle_Target[PITCH][MECH] = Manual_Centre_Pitch + Manual_High + (-Manual_Pitch_Comp);
-	}
-	else if(Manual_Step == CONFIRM_LOCATION
-				&& IF_KEY_PRESSED_A)//左
-	{
-		Cloud_Angle_Target[YAW][MECH]   = Manual_Centre_Yaw + Manual_Radius*YAW_POSITION;
-		Cloud_Angle_Target[PITCH][MECH] = Manual_Centre_Pitch + (-Manual_Pitch_Comp);
-	}
-	else if(Manual_Step == CONFIRM_LOCATION
-				&& IF_KEY_PRESSED_D)//右
-	{
-		Cloud_Angle_Target[YAW][MECH]   = Manual_Centre_Yaw - Manual_Radius*YAW_POSITION;
-		Cloud_Angle_Target[PITCH][MECH] = Manual_Centre_Pitch + (-Manual_Pitch_Comp);
-	}
-	else if(Manual_Step == CONFIRM_LOCATION )//不按归中
-	{
-		Cloud_Angle_Target[YAW][MECH]   = Manual_Centre_Yaw;
-		Cloud_Angle_Target[PITCH][MECH] = Manual_Centre_Pitch;
-	}
-}
-
 
 
 /************************云台测量值更新及发送**********************/
@@ -3228,51 +2709,7 @@ bool GIMBAL_MOBPRE_YAW_FIRE(void)
 	return Mobi_Pre_Yaw_Fire;
 }
 
-/**
-  * @brief  打符yaw是否移动到位
-  * @param  void
-  * @retval TRUE到位可打弹   FALSE没到位禁止打弹
-  * @attention 
-  */
-float debug_y_ready = 30;
-float debug_pix_y = 0;
-bool GIMBAL_BUFF_YAW_READY(void)
-{
-	debug_pix_y = fabs(gb_yaw_angle_gim + Buff_Yaw_Comp_Gimbal);
-	if( (fabs(gb_yaw_posit_error) < debug_y_ready) 
-			&& (VisionRecvData.yaw_angle != 0) 
-				&& fabs(gb_yaw_angle_gim + Buff_Yaw_Comp_Gimbal) <= 35 )//(VisionRecvData.identify_buff == TRUE) )//识别到了目标
-	{
-		return TRUE;
-	}
-	else
-	{
-		return FALSE;
-	}
-}
 
-/**
-  * @brief  打符pitch是否移动到位
-  * @param  void
-  * @retval TRUE到位可打弹   FALSE没到位禁止打弹
-  * @attention 
-  */
-float debug_p_ready = 30;
-float debug_pix_p = 0;
-bool GIMBAL_BUFF_PITCH_READY(void)
-{
-	debug_pix_p = fabs(gb_pitch_angle_gim + Buff_Pitch_Comp_Gimbal);
-	if( (fabs(gb_pitch_posit_error) < debug_p_ready)
-			&& (VisionRecvData.pitch_angle != 0) 
-				&& fabs(gb_pitch_angle_gim + Buff_Pitch_Comp_Gimbal) <= 35)//(VisionRecvData.identify_buff == TRUE) )//识别到了目标
-	{
-		return TRUE;
-	}
-	else
-	{
-		return FALSE;
-	}
-}
 
 /**
   * @brief  是否在自瞄哨兵
