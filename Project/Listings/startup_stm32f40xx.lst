@@ -871,10 +871,10 @@ ARM Macro Assembler    Page 14
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
 erwork --depend=.\objects\startup_stm32f40xx.d -o.\objects\startup_stm32f40xx.o
- -I.\RTE\_Target_1 -ID:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSI
-S\Device\ST\STM32F4xx\Include -ID:\Keil_v5\ARM\CMSIS\Include --predefine="__UVI
-SION_VERSION SETA 523" --predefine="STM32F427xx SETA 1" --list=.\listings\start
-up_stm32f40xx.lst ..\Libraries\startup\startup_stm32f40xx.s
+ -IU:\RM2019\单片机部分\rm程序部分\步兵\Infantry_NCEPUer\Project\RTE -IC:\Keil_
+v5\ARM\PACK\Keil\STM32F4xx_DFP\2.14.0 -IC:\Keil_v5\ARM\CMSIS\Include --predefin
+e="__UVISION_VERSION SETA 514" --predefine="STM32F429xx SETA 1" --list=.\listin
+gs\startup_stm32f40xx.lst ..\Libraries\startup\startup_stm32f40xx.s
 
 
 

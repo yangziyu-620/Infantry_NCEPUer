@@ -15,7 +15,7 @@
 
 //起始字节,协议固定为0xFF
 #define    VISION_SOF         (0xFF)
-#define    VISION_EOF         (0xFE)
+#define    VISION_AEOF         (0xFE)
 // 装甲板类型
 #define NO_ARMOR    (0x00)
 #define SMALL_ARMOR (0x01)
@@ -36,7 +36,7 @@ typedef __packed struct {
 	uint8_t shoot_freq;  // 射频
 	
 	/* 尾校验 */
-	uint8_t EOF;
+	uint8_t AEOF;
 } VisionRecvData_t;
 
 typedef __packed struct {
@@ -47,5 +47,6 @@ typedef __packed struct {
 	int16_t yaw;
 	
 	/* 尾校验 */
-	uint8_t EOF;
+	uint8_t AEOF;
 } VisionSendData_t;
+#endif

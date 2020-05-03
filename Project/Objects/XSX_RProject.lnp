@@ -1,4 +1,4 @@
---cpu=Cortex-M4.fp
+--cpu Cortex-M4.fp
 ".\objects\main.o"
 ".\objects\system.o"
 ".\objects\remote.o"
@@ -28,6 +28,7 @@
 ".\objects\info_transmitter.o"
 ".\objects\judge.o"
 ".\objects\vision.o"
+".\objects\vison2.o"
 ".\objects\timer_send_task.o"
 ".\objects\usart.o"
 ".\objects\sys.o"
