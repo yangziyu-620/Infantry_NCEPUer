@@ -12,6 +12,7 @@
 *.ilk
 *.map
 *.exp
+*.lst
 
 # Precompiled Headers
 *.gch
@@ -22,6 +23,9 @@
 *.a
 *.la
 *.lo
+
+Project/Objects
+Project/Listings
 
 # Shared objects (inc. Windows DLLs)
 *.dll
